@@ -1,0 +1,2 @@
+# SwiftyiRate
+iRate for swift
