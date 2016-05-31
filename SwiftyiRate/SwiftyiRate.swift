@@ -221,8 +221,8 @@ public struct SwiftyiRate {
         weak var delegate: SwiftyiRateDelegate?
         
         private var visibleAlert: UIAlertController?
-        private var checkingForPrompt: Bool?
-        private var checkingForAppStoreID: Bool?
+        private var checkingForPrompt: Bool = false
+        private var checkingForAppStoreID: Bool = false
         
         lazy private var bundle: NSBundle = {
             var bundle: NSBundle
@@ -565,7 +565,7 @@ public struct SwiftyiRate {
         
         /// 弹出提醒
         func promptForRating() {
-            if self.visibleAlert != nil {
+            if self.visibleAlert == nil {
                 let message = self.ratedAnyVersion ? self.updateMessage : self.message
                 
                 var topController = UIApplication.sharedApplication().keyWindow?.rootViewController

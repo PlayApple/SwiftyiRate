@@ -15,6 +15,7 @@
 		E041DA8A1CFDD741002F387B /* iPhoneDemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E041DA891CFDD741002F387B /* iPhoneDemoTests.swift */; };
 		E041DA951CFDD741002F387B /* iPhoneDemoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E041DA941CFDD741002F387B /* iPhoneDemoUITests.swift */; };
 		E041DAA31CFDD78A002F387B /* SwiftyiRate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E041DAA21CFDD78A002F387B /* SwiftyiRate.swift */; };
+		E041DAA81CFDEE99002F387B /* SwiftyiRate.bundle in Resources */ = {isa = PBXBuildFile; fileRef = E041DAA71CFDEE99002F387B /* SwiftyiRate.bundle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		E041DA941CFDD741002F387B /* iPhoneDemoUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iPhoneDemoUITests.swift; sourceTree = "<group>"; };
 		E041DA961CFDD741002F387B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E041DAA21CFDD78A002F387B /* SwiftyiRate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SwiftyiRate.swift; path = ../../SwiftyiRate/SwiftyiRate.swift; sourceTree = "<group>"; };
+		E041DAA71CFDEE99002F387B /* SwiftyiRate.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = SwiftyiRate.bundle; path = ../../SwiftyiRate/SwiftyiRate.bundle; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,6 +133,7 @@
 		E041DAA41CFDD799002F387B /* SwiftyiRate */ = {
 			isa = PBXGroup;
 			children = (
+				E041DAA71CFDEE99002F387B /* SwiftyiRate.bundle */,
 				E041DAA21CFDD78A002F387B /* SwiftyiRate.swift */,
 			);
 			name = SwiftyiRate;
@@ -241,6 +244,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E041DA7F1CFDD741002F387B /* LaunchScreen.storyboard in Resources */,
+				E041DAA81CFDEE99002F387B /* SwiftyiRate.bundle in Resources */,
 				E041DA7C1CFDD741002F387B /* Assets.xcassets in Resources */,
 				E041DA7A1CFDD741002F387B /* Main.storyboard in Resources */,
 			);
