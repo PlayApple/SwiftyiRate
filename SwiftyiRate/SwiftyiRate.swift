@@ -32,7 +32,7 @@ public struct SwiftyiRate {
     
     public static let iRateCouldNotConnectToAppStore = "iRateCouldNotConnectToAppStore"
     private static let iRateDidDetectAppUpdate = "iRateDidDetectAppUpdate"
-    private static let iRateDidPromptForRating = "iRateDidPromptForRating"
+    public static let iRateDidPromptForRating = "iRateDidPromptForRating"
     private static let iRateUserDidAttemptToRateApp = "iRateUserDidAttemptToRateApp"
     private static let iRateUserDidDeclineToRateApp = "iRateUserDidDeclineToRateApp"
     private static let iRateUserDidRequestReminderToRateApp = "iRateUserDidRequestReminderToRateApp"
@@ -540,37 +540,70 @@ public struct SwiftyiRate {
             operationQueue.addOperation(operation)
         }
         
-        /// 弹出提醒
-        func promptForRating() {
-            
-        }
-        
         /// 如果网络有效将检查AppStore的App信息
         func promptIfNetworkAvailable() {
-            
+            if (self.checkingForPrompt == false && self.checkingForAppStoreID == false) {
+                self.checkingForPrompt = true
+                checkForConnectivityInBackground()
+            }
         }
         
         /// 检查shouldPromptForRating和promptIfNetworkAvailable方法是否满足
         func promptIfAllCriteriaMet() {
-            
+            if shouldPromptForRating() {
+                promptIfNetworkAvailable()
+            }
         }
         
-        /// 打开打分提醒AppStore页面
-        func openRatingsPageInAppStore() {
-            
+        func showRemindButton() -> Bool {
+            return self.remindButtonLabel.characters.count > 0
         }
         
-        /// 发生事件进行添加
-        func logEvent(deferPrompt: Bool) {
-            
+        func showCancelButton() -> Bool {
+            return self.cancelButtonLabel.characters.count > 0
         }
         
-        // MARK: - NSNotification
-        
-        /// application will enter foreground
-        func applicationWillEnterForeground() {
-            if UIApplication.sharedApplication().applicationState == .Background {
+        /// 弹出提醒
+        func promptForRating() {
+            if self.visibleAlert != nil {
+                let message = self.ratedAnyVersion ? self.updateMessage : self.message
                 
+                var topController = UIApplication.sharedApplication().keyWindow?.rootViewController
+                while ((topController?.presentedViewController) != nil) {
+                    topController = topController?.presentedViewController
+                }
+                
+                let alert = UIAlertController(title: self.messageTitle, message: message, preferredStyle: .Alert)
+                
+                // rate action
+                let rateAction = UIAlertAction(title: self.rateButtonLabel, style: .Default, handler: {(action) -> Void in
+                    self.rate()
+                })
+                alert.addAction(rateAction)
+                
+                // remind action
+                if showRemindButton() {
+                    let remindAction = UIAlertAction(title: self.remindButtonLabel, style: .Default, handler: {(action) -> Void in
+                        self.remindLater()
+                    })
+                    alert.addAction(remindAction)
+                }
+                
+                // cancel action
+                if showCancelButton() {
+                    let cancelAction = UIAlertAction(title: self.cancelButtonLabel, style: .Cancel, handler: {(action) -> Void in
+                        self.declineThisVersion()
+                    })
+                    alert.addAction(cancelAction)
+                }
+                
+                self.visibleAlert = alert
+                // get current view controller and present alert
+                topController!.presentViewController(alert, animated: true, completion: nil)
+                
+                // inform about prompt
+                self.delegate?.iRateDidPromptForRating!()
+                NSNotificationCenter.defaultCenter().postNotificationName(iRateDidPromptForRating, object: nil)
             }
         }
         
@@ -581,8 +614,116 @@ public struct SwiftyiRate {
             let lastUsedVersion = defaults.objectForKey(iRateLastVersionUsedKey) as? String ?? ""
             if self.firstUsed == nil || lastUsedVersion != self.applicationVersion {
                 defaults.setObject(self.applicationVersion, forKey: iRateLastVersionUsedKey)
-                if self.firstUsed == nil {
-                    
+                if (self.firstUsed == nil || self.ratedAnyVersion) {
+                    // reset defaults
+                    defaults.setObject(NSDate(), forKey: iRateFirstUsedKey)
+                    defaults.setInteger(0, forKey: iRateUseCountKey)
+                    defaults.setInteger(0, forKey: iRateEventCountKey)
+                    defaults.setObject(nil, forKey: iRateLastRemindedKey)
+                    defaults.synchronize()
+                } else if Float(NSDate().timeIntervalSinceDate(self.firstUsed!)) > (self.daysUntilPrompt - 1) * SECONDS_IN_A_DAY {
+                    // if was previously installed, but we haven't yet prompted for a rating
+                    // don't reset, but make sure it won't rate for a day at least
+                    self.firstUsed = NSDate().dateByAddingTimeInterval(Double((self.daysUntilPrompt - 1) * -SECONDS_IN_A_DAY))
+                }
+                
+                // inform about app update
+                self.delegate?.iRateDidDetectAppUpdate!()
+                NSNotificationCenter.defaultCenter().postNotificationName(iRateDidDetectAppUpdate, object: nil)
+            }
+            
+            incrementUseCount()
+            checkForConnectivityInBackground()
+            if self.promptAtLaunch {
+                promptIfAllCriteriaMet()
+            }
+        }
+        
+        /// application will enter foreground
+        func applicationWillEnterForeground() {
+            if UIApplication.sharedApplication().applicationState == .Background {
+                incrementUseCount()
+                checkForConnectivityInBackground()
+                if self.promptAtLaunch {
+                    promptIfAllCriteriaMet()
+                }
+            }
+        }
+        
+        /// 打开打分提醒AppStore页面
+        func openRatingsPageInAppStore() {
+            if (self.ratingsURL == nil && self.appStoreID <= 0) {
+                self.checkingForAppStoreID = true
+                if self.checkingForPrompt == false {
+                    checkForConnectivityInBackground()
+                }
+                return
+            }
+            
+            var cantOpenMessage: String?
+#if TARGET_OS_SIMULATOR
+            if self.ratingsURL?.scheme == iRateiOSAppStoreURLScheme {
+                cantOpenMessage = "iRate could not open the ratings page because the App Store is not available on the iOS simulator";
+            }
+#endif
+            if UIApplication.sharedApplication().canOpenURL(self.ratingsURL!) == false {
+                cantOpenMessage = "iRate was unable to open the specified ratings URL: \(self.ratingsURL!)"
+            }
+            
+            if cantOpenMessage != nil {
+                printLog(cantOpenMessage)
+                let error = NSError(domain: iRateErrorDomain, code: SwiftyiRateErrorCode.iRateErrorCouldNotOpenRatingPageURL.rawValue, userInfo: [NSLocalizedDescriptionKey: cantOpenMessage!])
+                self.delegate?.iRateCouldNotConnectToAppStore!(error)
+                NSNotificationCenter.defaultCenter().postNotificationName(iRateCouldNotConnectToAppStore, object: error)
+            } else {
+                printLog("iRate will open the App Store ratings page using the following URL: \(self.ratingsURL!)")
+                
+                UIApplication.sharedApplication().openURL(self.ratingsURL!)
+                self.delegate?.iRateDidOpenAppStore!()
+                NSNotificationCenter.defaultCenter().postNotificationName(iRateDidOpenAppStore, object: nil)
+            }
+            
+        }
+        
+        /// 发生事件进行添加
+        func logEvent(deferPrompt: Bool) {
+            incrementEventCount()
+            if deferPrompt == false {
+                promptIfAllCriteriaMet()
+            }
+        }
+        
+        // MARK: - User action
+        func declineThisVersion() {
+            // ignore this version
+            self.declinedThisVersion = true
+            
+            // log event
+            self.delegate?.iRateUserDidDeclineToRateApp!()
+            NSNotificationCenter.defaultCenter().postNotificationName(iRateUserDidDeclineToRateApp, object: nil)
+        }
+        
+        func remindLater() {
+            // remind later
+            self.lastReminded = NSDate()
+            
+            // log event
+            self.delegate?.iRateUserDidRequestReminderToRateApp!()
+            NSNotificationCenter.defaultCenter().postNotificationName(iRateUserDidRequestReminderToRateApp, object: nil)
+        }
+        
+        func rate() {
+            // mark as rated
+            self.ratedThisVersion = true
+            
+            // log event
+            self.delegate?.iRateUserDidAttemptToRateApp!()
+            NSNotificationCenter.defaultCenter().postNotificationName(iRateUserDidAttemptToRateApp, object: nil)
+            
+            if let delegate = self.delegate {
+                if delegate.iRateShouldOpenAppStore!() {
+                    // launch mac app store
+                    openRatingsPageInAppStore()
                 }
             }
         }
