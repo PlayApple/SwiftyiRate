@@ -22,13 +22,13 @@ public struct SwiftyiRate {
     private static let iRateAppStoreGameGenreID = 6014
     private static let iRateErrorDomain = "iRateErrorDomain"
     
-    public static let iRateMessageTitleKey = "iRateMessageTitle"
-    public static let iRateAppMessageKey = "iRateAppMessage"
-    public static let iRateGameMessageKey = "iRateGameMessage"
-    public static let iRateUpdateMessageKey = "iRateUpdateMessage"
-    public static let iRateCancelButtonKey = "iRateCancelButton"
-    public static let iRateRemindButtonKey = "iRateRemindButton"
-    public static let iRateRateButtonKey = "iRateRateButton"
+    private static let iRateMessageTitleKey = "iRateMessageTitle"
+    private static let iRateAppMessageKey = "iRateAppMessage"
+    private static let iRateGameMessageKey = "iRateGameMessage"
+    private static let iRateUpdateMessageKey = "iRateUpdateMessage"
+    private static let iRateCancelButtonKey = "iRateCancelButton"
+    private static let iRateRemindButtonKey = "iRateRemindButton"
+    private static let iRateRateButtonKey = "iRateRateButton"
     
     public static let iRateCouldNotConnectToAppStore = "iRateCouldNotConnectToAppStore"
     private static let iRateDidDetectAppUpdate = "iRateDidDetectAppUpdate"

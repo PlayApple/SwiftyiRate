@@ -278,47 +278,47 @@ This method skips the user alert and opens the application ratings page in the M
 The SwiftyiRateDelegate protocol provides the following methods that can be used intercept SwiftyiRate events and override the default behaviour. All methods are optional.
 
 ```swift
-optional func SwiftyiRateCouldNotConnectToAppStore(error: NSError)
+optional func iRateCouldNotConnectToAppStore(error: NSError)
 ```
 This method is called if SwiftyiRate cannot connect to the App Store, usually because the network connection is down. This may also fire if your app does not have access to the network due to Sandbox permissions, in which case you will need to manually set the appStoreID so that SwiftyiRate can still function.
 
 ```swift
-optional func SwiftyiRateDidDetectAppUpdate()
+optional func iRateDidDetectAppUpdate()
 ```
 This method is called if SwiftyiRate detects that the application has been updated since the last time it was launched.
 
 ```swift
-optional func SwiftyiRateShouldPromptForRating() -> Bool
+optional func iRateShouldPromptForRating() -> Bool
 ```
 This method is called immediately before the rating prompt is displayed to the user. You can use this method to implement custom prompt logic in addition to the standard rules. You can also use this method to block the standard prompt alert and display the rating prompt in a different way, or bypass it altogether.
 
 ```swift
-optional func SwiftyiRateDidPromptForRating()
+optional func iRateDidPromptForRating()
 ```
 This method is called immediately before the rating prompt is displayed. This is useful if you use analytics to track what percentage of users see the prompt and then go to the app store. This can help you fine tune the circumstances around when/how you show the prompt.
 
 ```swift
-optional func SwiftyiRateUserDidAttemptToRateApp()
+optional func iRateUserDidAttemptToRateApp()
 ```
 This is called when the user pressed the rate button in the rating prompt. This is useful if you want to log user interaction with SwiftyiRate. This method is only called if you are using the standard SwiftyiRate alert view prompt and will not be called automatically if you provide a custom rating implementation or call the `openRatingsPageInAppStore` method directly.
    
 ```swift 
-optional func SwiftyiRateUserDidDeclineToRateApp()
+optional func iRateUserDidDeclineToRateApp()
 ```
 This is called when the user declines to rate the app. This is useful if you want to log user interaction with SwiftyiRate. This method is only called if you are using the standard SwiftyiRate alert view prompt and will not be called automatically if you provide a custom rating implementation.
    
 ```swift  
-optional func SwiftyiRateUserDidRequestReminderToRateApp()
+optional func iRateUserDidRequestReminderToRateApp()
 ```
 This is called when the user asks to be reminded to rate the app. This is useful if you want to log user interaction with SwiftyiRate. This method is only called if you are using the standard SwiftyiRate alert view prompt and will not be called automatically if you provide a custom rating implementation.
 
 ```swift
-optional func SwiftyiRateShouldOpenAppStore() -> Bool  
+optional func iRateShouldOpenAppStore() -> Bool  
 ```
 This method is called immediately before SwiftyiRate attempts to open the app store. Return NO if you wish to implement your own ratings page display logic.
 
 ```swift
-optional func SwiftyiRateDidOpenAppStore()
+optional func iRateDidOpenAppStore()
 ```
 This method is called immediately after SwiftyiRate opens the app store.
 
@@ -329,13 +329,13 @@ This method is called immediately after SwiftyiRate opens the app store.
 The default strings for SwiftyiRate are already localised for many languages. By default, SwiftyiRate will use all the localisations in the SwiftyiRate.bundle even in an app that is not localised, or which is only localised to a subset of the languages that SwiftyiRate supports. The SwiftyiRate strings keys are:
 
 ```swift
-public static let SwiftyiRateMessageTitleKey = "iRateMessageTitle"
-public static let SwiftyiRateAppMessageKey = "iRateAppMessage"
-public static let SwiftyiRateGameMessageKey = "iRateGameMessage"
-public static let SwiftyiRateUpdateMessageKey = "iRateUpdateMessage"
-public static let SwiftyiRateCancelButtonKey = "iRateCancelButton"
-public static let SwiftyiRateRemindButtonKey = "iRateRemindButton"
-public static let SwiftyiRateRateButtonKey = "iRateRateButton"
+private static let SwiftyiRateMessageTitleKey = "iRateMessageTitle"
+private static let SwiftyiRateAppMessageKey = "iRateAppMessage"
+private static let SwiftyiRateGameMessageKey = "iRateGameMessage"
+private static let SwiftyiRateUpdateMessageKey = "iRateUpdateMessage"
+private static let SwiftyiRateCancelButtonKey = "iRateCancelButton"
+private static let SwiftyiRateRemindButtonKey = "iRateRemindButton"
+private static let SwiftyiRateRateButtonKey = "iRateRateButton"
 ```
 
 If you would prefer SwiftyiRate to only use the localisations that are enabled in your application (so that if your app only supports English, French and Spanish, SwiftyiRate will automatically be localised for those languages, but not for German, even though SwiftyiRate includes a German language file), set the `useAllAvailableLanguages` option to NO.
