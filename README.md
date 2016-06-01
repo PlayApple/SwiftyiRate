@@ -46,12 +46,9 @@ import SwiftyiRate
 
 ```swift
 override class func initialize () {
-	// overriding the default SwiftyiRate strings
-	SwiftyiRate.sharedSwiftyiRate.messageTitle = NSLocalizedString("kMessageTitle", comment: "iRate message title")
-	SwiftyiRate.sharedSwiftyiRate.message = NSLocalizedString("kMessage", comment: "iRate message")
-	SwiftyiRate.sharedSwiftyiRate.cancelButtonLabel = NSLocalizedString("kCancelButtonLabel", comment: "Decline Button")
-	SwiftyiRate.sharedSwiftyiRate.remindButtonLabel = NSLocalizedString("kRemindButtonLabel", comment: "Remind Button")
-	SwiftyiRate.sharedSwiftyiRate.rateButtonLabel = NSLocalizedString("kRateButtonLabel", comment: "Rate Button")
+	//configure iRate
+	SwiftyiRate.sharedSwiftyiRate.daysUntilPrompt = 5
+	SwiftyiRate.sharedSwiftyiRate.usesUntilPrompt = 15
 }
 ```
 

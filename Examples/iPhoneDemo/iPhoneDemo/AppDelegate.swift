@@ -15,7 +15,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     override class func initialize () {
-        // overriding the default iRate strings
+        
+        //configure iRate
+        SwiftyiRate.sharedSwiftyiRate.daysUntilPrompt = 5
+        SwiftyiRate.sharedSwiftyiRate.usesUntilPrompt = 15
+        
+        // overriding the default iRate strings if necessary
         SwiftyiRate.sharedSwiftyiRate.messageTitle = NSLocalizedString("kMessageTitle", comment: "iRate message title")
         SwiftyiRate.sharedSwiftyiRate.message = NSLocalizedString("kMessage", comment: "iRate message")
         SwiftyiRate.sharedSwiftyiRate.cancelButtonLabel = NSLocalizedString("kCancelButtonLabel", comment: "Decline Button")
