@@ -14,6 +14,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
 
+    override class func initialize () {
+        // overriding the default iRate strings
+        SwiftyiRate.sharedSwiftyiRate.messageTitle = NSLocalizedString("kMessageTitle", comment: "iRate message title")
+        SwiftyiRate.sharedSwiftyiRate.message = NSLocalizedString("kMessage", comment: "iRate message")
+        SwiftyiRate.sharedSwiftyiRate.cancelButtonLabel = NSLocalizedString("kCancelButtonLabel", comment: "Decline Button")
+        SwiftyiRate.sharedSwiftyiRate.remindButtonLabel = NSLocalizedString("kRemindButtonLabel", comment: "Remind Button")
+        SwiftyiRate.sharedSwiftyiRate.rateButtonLabel = NSLocalizedString("kRateButtonLabel", comment: "Rate Button")
+        
+        // for test app id
+        SwiftyiRate.sharedSwiftyiRate.appStoreID = 1115972702
+        SwiftyiRate.sharedSwiftyiRate.applicationBundleID = "com.cocos2dev.iBabyMusic"
+        SwiftyiRate.sharedSwiftyiRate.previewMode = true
+        SwiftyiRate.sharedSwiftyiRate.verboseLogging = true
+    }
+    
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         return true

@@ -14,10 +14,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        SwiftyiRate.sharedSwiftyiRate.appStoreID = 1115972702
-        SwiftyiRate.sharedSwiftyiRate.applicationBundleID = "com.cocos2dev.iBabyMusic"
-        SwiftyiRate.sharedSwiftyiRate.previewMode = true
-        SwiftyiRate.sharedSwiftyiRate.verboseLogging = true
+       
     }
 
     override func didReceiveMemoryWarning() {
