@@ -7,6 +7,14 @@ SwiftyiRate makes it easy to deal with rate app in Swift.
 1. [Integration](#integration)
 1. [Usage](#usage)
 	- [Initialization](#initialization)
+1. [Configuration](#Configuration)
+1. [Advanced properties](#Advanced properties)
+1. [Methods](#Methods)
+1. [Delegate methods](#Delegate methods)
+1. [Localisation](#Localisation)
+1. [Example Projects](#Example Projects)
+1. [Advanced Example](#Advanced Example)
+1. [Release Notes](#Release Notes)
 
 ## Requirements
 --------------
