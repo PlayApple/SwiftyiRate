@@ -22,13 +22,13 @@ public struct SwiftyiRate {
     private static let iRateAppStoreGameGenreID = 6014
     private static let iRateErrorDomain = "iRateErrorDomain"
     
-    private static let iRateMessageTitleKey = "iRateMessageTitle"
-    private static let iRateAppMessageKey = "iRateAppMessage"
-    private static let iRateGameMessageKey = "iRateGameMessage"
-    private static let iRateUpdateMessageKey = "iRateUpdateMessage"
-    private static let iRateCancelButtonKey = "iRateCancelButton"
-    private static let iRateRemindButtonKey = "iRateRemindButton"
-    private static let iRateRateButtonKey = "iRateRateButton"
+    public static let iRateMessageTitleKey = "iRateMessageTitle"
+    public static let iRateAppMessageKey = "iRateAppMessage"
+    public static let iRateGameMessageKey = "iRateGameMessage"
+    public static let iRateUpdateMessageKey = "iRateUpdateMessage"
+    public static let iRateCancelButtonKey = "iRateCancelButton"
+    public static let iRateRemindButtonKey = "iRateRemindButton"
+    public static let iRateRateButtonKey = "iRateRateButton"
     
     public static let iRateCouldNotConnectToAppStore = "iRateCouldNotConnectToAppStore"
     private static let iRateDidDetectAppUpdate = "iRateDidDetectAppUpdate"
@@ -63,27 +63,27 @@ public struct SwiftyiRate {
     public static let sharedSwiftyiRate = SwiftyiRate()
     
     public class SwiftyiRate: NSObject {
-        //app store ID - this is only needed if your
-        //bundle ID is not unique between iOS and Mac app stores
+        // app store ID - this is only needed if your
+        // bundle ID is not unique between iOS and Mac app stores
         lazy var appStoreID: Int? = {
             return NSUserDefaults.standardUserDefaults().objectForKey(iRateAppStoreIDKey)?.integerValue
         }()
         
-        //application details - these are set automatically
+        // application details - these are set automatically
         var appStoreGenreID: Int?
         var appStoreCountry: String
         var applicationName: String
         var applicationVersion: String
         var applicationBundleID: String?
         
-        //usage settings - these have sensible defaults
+        // usage settings - these have sensible defaults
         var usesUntilPrompt: Int
         var eventsUntilPrompt: Int
         var daysUntilPrompt: Float
         var usesPerWeekForPrompt: Float
         var remindPeriod: Float
         
-        //message text, you may wish to customise these
+        // message text, you may wish to customise these
         lazy var messageTitle: String = {
             return self.localizedStringForKey(iRateMessageTitleKey, withDefault: "Rate %@").stringByReplacingOccurrencesOfString("%@", withString: self.applicationName)
         }()
@@ -108,7 +108,6 @@ public struct SwiftyiRate {
         }()
         
         //debugging and prompt overrides
-        var useUIAlertControllerIfAvailable = true
         var useAllAvailableLanguages = true
         var promptForNewVersionIfUserRated: Bool
         var onlyPromptIfLatestVersion: Bool
