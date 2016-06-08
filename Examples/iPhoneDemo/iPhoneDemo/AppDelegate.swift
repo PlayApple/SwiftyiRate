@@ -17,21 +17,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     override class func initialize () {
         
         //configure iRate
-        SwiftyiRate.sharedSwiftyiRate.daysUntilPrompt = 5
-        SwiftyiRate.sharedSwiftyiRate.usesUntilPrompt = 15
-        
-        // overriding the default iRate strings if necessary
-        SwiftyiRate.sharedSwiftyiRate.messageTitle = NSLocalizedString("kMessageTitle", comment: "iRate message title")
-        SwiftyiRate.sharedSwiftyiRate.message = NSLocalizedString("kMessage", comment: "iRate message")
-        SwiftyiRate.sharedSwiftyiRate.cancelButtonLabel = NSLocalizedString("kCancelButtonLabel", comment: "Decline Button")
-        SwiftyiRate.sharedSwiftyiRate.remindButtonLabel = NSLocalizedString("kRemindButtonLabel", comment: "Remind Button")
-        SwiftyiRate.sharedSwiftyiRate.rateButtonLabel = NSLocalizedString("kRateButtonLabel", comment: "Rate Button")
+        SwiftyiRate.sharedInstance.daysUntilPrompt = 5
+        SwiftyiRate.sharedInstance.usesUntilPrompt = 15
         
         // for test app id
-        SwiftyiRate.sharedSwiftyiRate.appStoreID = 1115972702
-        SwiftyiRate.sharedSwiftyiRate.applicationBundleID = "com.cocos2dev.iBabyMusic"
-        SwiftyiRate.sharedSwiftyiRate.previewMode = true
-        SwiftyiRate.sharedSwiftyiRate.verboseLogging = true
+        SwiftyiRate.sharedInstance.appStoreID = 1115972702
+        SwiftyiRate.sharedInstance.applicationBundleID = "com.cocos2dev.iBabyMusic"
+        SwiftyiRate.sharedInstance.previewMode = true
+        SwiftyiRate.sharedInstance.verboseLogging = true
     }
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
