@@ -47,8 +47,8 @@ import SwiftyiRate
 ```swift
 override class func initialize () {
 	//configure iRate
-	SwiftyiRate.sharedSwiftyiRate.daysUntilPrompt = 5
-	SwiftyiRate.sharedSwiftyiRate.usesUntilPrompt = 15
+	SwiftyiRate.sharedInstance.daysUntilPrompt = 5
+	SwiftyiRate.sharedInstance.usesUntilPrompt = 15
 }
 ```
 
@@ -348,11 +348,11 @@ The old method of overriding SwiftyiRate's default strings by using individual s
 ```swift
 override class func initialize () {
     // overriding the default SwiftyiRate strings
-    SwiftyiRate.sharedSwiftyiRate.messageTitle = NSLocalizedString("kMessageTitle", comment: "iRate message title")
-    SwiftyiRate.sharedSwiftyiRate.message = NSLocalizedString("kMessage", comment: "iRate message")
-    SwiftyiRate.sharedSwiftyiRate.cancelButtonLabel = NSLocalizedString("kCancelButtonLabel", comment: "Decline Button")
-    SwiftyiRate.sharedSwiftyiRate.remindButtonLabel = NSLocalizedString("kRemindButtonLabel", comment: "Remind Button")
-    SwiftyiRate.sharedSwiftyiRate.rateButtonLabel = NSLocalizedString("kRateButtonLabel", comment: "Rate Button")
+    SwiftyiRate.sharedInstance.messageTitle = NSLocalizedString("kMessageTitle", comment: "iRate message title")
+    SwiftyiRate.sharedInstance.message = NSLocalizedString("kMessage", comment: "iRate message")
+    SwiftyiRate.sharedInstance.cancelButtonLabel = NSLocalizedString("kCancelButtonLabel", comment: "Decline Button")
+    SwiftyiRate.sharedInstance.remindButtonLabel = NSLocalizedString("kRemindButtonLabel", comment: "Remind Button")
+    SwiftyiRate.sharedInstance.rateButtonLabel = NSLocalizedString("kRateButtonLabel", comment: "Rate Button")
 }
 ```
 
