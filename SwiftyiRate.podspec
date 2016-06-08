@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "SwiftyiRate"
-  s.version      = "1.0"
+  s.version      = "1.0.1"
   s.summary      = "SwiftyiRate makes it easy to deal with rate app in Swift"
   s.homepage     = "https://github.com/PlayApple/SwiftyiRate"
   s.license      = { :type => "MIT", :file => "LICENSE" }
