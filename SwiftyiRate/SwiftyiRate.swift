@@ -447,7 +447,7 @@ public class SwiftyiRate: NSObject {
         inCheckingBackground = true
         
         let operation = NSBlockOperation { () -> Void in
-            //first check iTunes
+            // first check iTunes
             var iTunesServiceURL = String(format: iRateAppLookupURLFormat, self.appStoreCountry)
             if self.appStoreID > 0 { //important that we check ivar and not getter in case it has changed
                 iTunesServiceURL += "?id=\(self.appStoreID!)"
@@ -459,77 +459,84 @@ public class SwiftyiRate: NSObject {
             let url = NSURL(string: iTunesServiceURL)!
             let session = NSURLSession.sharedSession()
             let task = session.dataTaskWithURL(url, completionHandler: { (data, response, error) -> Void in
-                let statusCode = (response as! NSHTTPURLResponse).statusCode
+                let response = response as! NSHTTPURLResponse
                 var returnError = error
-                if data != nil && statusCode == 200 {
-                    // in case error is garbage...
-                    returnError = nil
-                    var json : AnyObject?
-                    do {
-                        json = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers)
-                    } catch let error as NSError {
-                        returnError = error
+                defer {
+                    // handle errors (ignoring sandbox issues)
+                    if returnError?.code == Int(EPERM) && returnError?.domain == NSPOSIXErrorDomain && self.appStoreID > 0 {
+                        dispatch_async(dispatch_get_main_queue(), {
+                            self.connectionError(returnError)
+                        })
+                    } else if self.appStoreID > 0 || self.previewMode {
+                        // show prompt
+                        dispatch_async(dispatch_get_main_queue(), {
+                            self.connectionSucceeded()
+                        })
                     }
-                    if returnError == nil {
-                        let resultsJson = (json?.objectForKey("results")![0])!
-                        if let bundleID = resultsJson.objectForKey("bundleId") as? String {
-                            if bundleID == self.applicationBundleID {
-                                // get genre
-                                if self.appStoreGenreID == nil {
-                                    self.appStoreGenreID = resultsJson.objectForKey("primaryGenreId") as? Int
-                                }
-                                
-                                // get app id
-                                if self.appStoreID <= 0 {
-                                    let appStoreID = resultsJson.objectForKey("trackId") as? Int
-                                    self.printLog("iRate found the app on iTunes. The App Store ID is \(appStoreID)")
-                                    dispatch_async(dispatch_get_main_queue(), {
-                                        self.setAppStoreIDOnMainThread(appStoreID!)
-                                    })
-                                }
-                                
-                                // check version
-                                if self.onlyPromptIfLatestVersion && self.previewMode == false {
-                                    let latestVersion = resultsJson.objectForKey("version") as! String
-                                    if latestVersion.compare(self.applicationVersion, options: NSStringCompareOptions.NumericSearch) == NSComparisonResult.OrderedDescending {
-                                        // latestVersion number is larger than self.applicationVersion number
-                                        self.printLog("SwiftyiRate found that the installed application version (\(self.applicationVersion)) is not the latest version on the App Store, which is \(latestVersion)")
-                                        
-                                        returnError = NSError(domain: iRateErrorDomain, code: SwiftyiRateErrorCode.iRateErrorBundleIdDoesNotMatchAppStore.rawValue, userInfo: [NSLocalizedDescriptionKey: "Installed app is not the latest version available"])
-                                    }
-                                }
-                            } else {
-                                self.printLog("SwiftyiRate found that the application bundle ID (\(self.applicationBundleID)) does not match the bundle ID of the app found on iTunes (\(bundleID)) with the specified App Store ID (\(self.appStoreID))")
-                                
-                                returnError = NSError(domain: iRateErrorDomain, code: SwiftyiRateErrorCode.iRateErrorBundleIdDoesNotMatchAppStore.rawValue, userInfo: [NSLocalizedDescriptionKey: "Application bundle ID does not match expected value of \(bundleID)"])
-                                
-                            }
-                        } else if self.appStoreID > 0 || self.ratingsURL == nil {
-                            self.printLog("SwiftyiRate could not find this application on iTunes. If your app is not intended for App Store release then you must specify a custom ratingsURL. If this is the first release of your application then it's not a problem that it cannot be found on the store yet")
-                            if self.previewMode == false {
-                                returnError = NSError(domain: iRateErrorDomain, code: SwiftyiRateErrorCode.iRateErrorApplicationNotFoundOnAppStore.rawValue, userInfo: [NSLocalizedDescriptionKey: "The application could not be found on the App Store."])
-                            }
-                        } else if self.appStoreID <= 0{
-                            self.printLog("SwiftyiRate could not find your app on iTunes. If your app is not yet on the store or is not intended for App Store release then don't worry about this");
-                        }
-                    }
-                } else if statusCode >= 400 {
+                    self.inCheckingBackground = false
+                }
+                guard response.statusCode != 200 else {
                     // http error
-                    returnError = NSError(domain: "HTTPResponseErrorDomain", code: statusCode, userInfo: [NSLocalizedDescriptionKey: "The server returned a \(statusCode) error"])
+                    returnError = NSError(domain: "HTTPResponseErrorDomain", code: response.statusCode, userInfo: [NSLocalizedDescriptionKey: "The server returned a \(response.statusCode) error"])
+                    return
+                }
+                guard let data = data else {
+                    // empty response
+                    returnError = NSError(domain: "HTTPResponseErrorDomain", code: response.statusCode, userInfo: [NSLocalizedDescriptionKey: "The server returned an empty response"])
+                    return
+                }
+                let json: AnyObject?
+                do {
+                    json = try NSJSONSerialization.JSONObjectWithData(data, options: [])
+                } catch let error as NSError {
+                    returnError = error
+                    return
+                }
+                guard let resultsJson = (json?.objectForKey("results") as? [AnyObject])?[0] else {
+                    returnError = NSError(domain: "HTTPResponseErrorDomain", code: response.statusCode, userInfo: [NSLocalizedDescriptionKey: "The server returned an invalid JSON"])
+                    return
+                }
+                if let bundleID = resultsJson.objectForKey("bundleId") as? String {
+                    if bundleID == self.applicationBundleID {
+                        // get genre
+                        if self.appStoreGenreID == nil {
+                            self.appStoreGenreID = resultsJson.objectForKey("primaryGenreId") as? Int
+                        }
+                        
+                        // get app id
+                        if self.appStoreID <= 0 {
+                            let appStoreID = resultsJson.objectForKey("trackId") as? Int
+                            self.printLog("iRate found the app on iTunes. The App Store ID is \(appStoreID)")
+                            dispatch_async(dispatch_get_main_queue(), {
+                                self.setAppStoreIDOnMainThread(appStoreID!)
+                            })
+                        }
+                        
+                        // check version
+                        if self.onlyPromptIfLatestVersion && self.previewMode == false {
+                            let latestVersion = resultsJson.objectForKey("version") as! String
+                            if latestVersion.compare(self.applicationVersion, options: NSStringCompareOptions.NumericSearch) == NSComparisonResult.OrderedDescending {
+                                // latestVersion number is larger than self.applicationVersion number
+                                self.printLog("SwiftyiRate found that the installed application version (\(self.applicationVersion)) is not the latest version on the App Store, which is \(latestVersion)")
+                                
+                                returnError = NSError(domain: iRateErrorDomain, code: SwiftyiRateErrorCode.iRateErrorBundleIdDoesNotMatchAppStore.rawValue, userInfo: [NSLocalizedDescriptionKey: "Installed app is not the latest version available"])
+                            }
+                        }
+                    } else {
+                        self.printLog("SwiftyiRate found that the application bundle ID (\(self.applicationBundleID)) does not match the bundle ID of the app found on iTunes (\(bundleID)) with the specified App Store ID (\(self.appStoreID))")
+                        
+                        returnError = NSError(domain: iRateErrorDomain, code: SwiftyiRateErrorCode.iRateErrorBundleIdDoesNotMatchAppStore.rawValue, userInfo: [NSLocalizedDescriptionKey: "Application bundle ID does not match expected value of \(bundleID)"])
+                        
+                    }
+                } else if self.appStoreID > 0 || self.ratingsURL == nil {
+                    self.printLog("SwiftyiRate could not find this application on iTunes. If your app is not intended for App Store release then you must specify a custom ratingsURL. If this is the first release of your application then it's not a problem that it cannot be found on the store yet")
+                    if self.previewMode == false {
+                        returnError = NSError(domain: iRateErrorDomain, code: SwiftyiRateErrorCode.iRateErrorApplicationNotFoundOnAppStore.rawValue, userInfo: [NSLocalizedDescriptionKey: "The application could not be found on the App Store."])
+                    }
+                } else if self.appStoreID <= 0{
+                    self.printLog("SwiftyiRate could not find your app on iTunes. If your app is not yet on the store or is not intended for App Store release then don't worry about this");
                 }
                 
-                // handle errors (ignoring sandbox issues)
-                if returnError != nil && !(returnError?.code == Int(EPERM) && returnError?.domain == NSPOSIXErrorDomain && self.appStoreID > 0) {
-                    dispatch_async(dispatch_get_main_queue(), {
-                        self.connectionError(returnError)
-                    })
-                } else if self.appStoreID > 0 || self.previewMode {
-                    // show prompt
-                    dispatch_async(dispatch_get_main_queue(), {
-                        self.connectionSucceeded()
-                    })
-                }
-                self.inCheckingBackground = false
             })
             task.resume()
             
