@@ -684,7 +684,7 @@ public class SwiftyiRate: NSObject {
     }
     
     /// 发生事件进行添加
-    func logEvent(deferPrompt: Bool) {
+    public func logEvent(deferPrompt: Bool) {
         incrementEventCount()
         if deferPrompt == false {
             promptIfAllCriteriaMet()
