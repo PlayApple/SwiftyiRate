@@ -68,7 +68,7 @@ public class SwiftyiRate: NSObject {
     
     // app store ID - this is only needed if your
     // bundle ID is not unique between iOS and Mac app stores
-    lazy var appStoreID: Int? = {
+    lazy public var appStoreID: Int? = {
         return NSUserDefaults.standardUserDefaults().objectForKey(iRateAppStoreIDKey)?.integerValue
     }()
     
@@ -475,7 +475,7 @@ public class SwiftyiRate: NSObject {
                     }
                     self.inCheckingBackground = false
                 }
-                guard response.statusCode != 200 else {
+                guard response.statusCode == 200 else {
                     // http error
                     returnError = NSError(domain: "HTTPResponseErrorDomain", code: response.statusCode, userInfo: [NSLocalizedDescriptionKey: "The server returned a \(response.statusCode) error"])
                     return

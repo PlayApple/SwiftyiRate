@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SwiftyiRate
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {

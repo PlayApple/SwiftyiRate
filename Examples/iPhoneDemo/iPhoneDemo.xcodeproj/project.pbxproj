@@ -14,8 +14,7 @@
 		E041DA7F1CFDD741002F387B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E041DA7D1CFDD741002F387B /* LaunchScreen.storyboard */; };
 		E041DA8A1CFDD741002F387B /* iPhoneDemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E041DA891CFDD741002F387B /* iPhoneDemoTests.swift */; };
 		E041DA951CFDD741002F387B /* iPhoneDemoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E041DA941CFDD741002F387B /* iPhoneDemoUITests.swift */; };
-		E041DAA31CFDD78A002F387B /* SwiftyiRate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E041DAA21CFDD78A002F387B /* SwiftyiRate.swift */; };
-		E041DAA81CFDEE99002F387B /* SwiftyiRate.bundle in Resources */ = {isa = PBXBuildFile; fileRef = E041DAA71CFDEE99002F387B /* SwiftyiRate.bundle */; };
+		E064300A1D20360A00B8CC55 /* SwiftyiRate.bundle in Resources */ = {isa = PBXBuildFile; fileRef = E06430091D20360A00B8CC55 /* SwiftyiRate.bundle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -33,6 +32,27 @@
 			remoteGlobalIDString = E041DA701CFDD741002F387B;
 			remoteInfo = iPhoneDemo;
 		};
+		E06430031D2035E500B8CC55 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E0642FFE1D2035E500B8CC55 /* SwiftyiRate.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = E0E67F901CFDD60100CE18C9;
+			remoteInfo = SwiftyiRate;
+		};
+		E06430051D2035E500B8CC55 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E0642FFE1D2035E500B8CC55 /* SwiftyiRate.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = E0E67F9A1CFDD60100CE18C9;
+			remoteInfo = SwiftyiRateTests;
+		};
+		E06430071D2035F800B8CC55 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E0642FFE1D2035E500B8CC55 /* SwiftyiRate.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = E0E67F8F1CFDD60100CE18C9;
+			remoteInfo = SwiftyiRate;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -49,8 +69,8 @@
 		E041DA901CFDD741002F387B /* iPhoneDemoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iPhoneDemoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E041DA941CFDD741002F387B /* iPhoneDemoUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iPhoneDemoUITests.swift; sourceTree = "<group>"; };
 		E041DA961CFDD741002F387B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		E041DAA21CFDD78A002F387B /* SwiftyiRate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SwiftyiRate.swift; path = ../../SwiftyiRate/SwiftyiRate.swift; sourceTree = "<group>"; };
-		E041DAA71CFDEE99002F387B /* SwiftyiRate.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = SwiftyiRate.bundle; path = ../../SwiftyiRate/SwiftyiRate.bundle; sourceTree = "<group>"; };
+		E0642FFE1D2035E500B8CC55 /* SwiftyiRate.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SwiftyiRate.xcodeproj; path = ../../SwiftyiRate.xcodeproj; sourceTree = "<group>"; };
+		E06430091D20360A00B8CC55 /* SwiftyiRate.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = SwiftyiRate.bundle; path = ../../SwiftyiRate/SwiftyiRate.bundle; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,7 +101,8 @@
 		E041DA681CFDD741002F387B = {
 			isa = PBXGroup;
 			children = (
-				E041DAA41CFDD799002F387B /* SwiftyiRate */,
+				E06430091D20360A00B8CC55 /* SwiftyiRate.bundle */,
+				E0642FFE1D2035E500B8CC55 /* SwiftyiRate.xcodeproj */,
 				E041DA731CFDD741002F387B /* iPhoneDemo */,
 				E041DA881CFDD741002F387B /* iPhoneDemoTests */,
 				E041DA931CFDD741002F387B /* iPhoneDemoUITests */,
@@ -130,13 +151,13 @@
 			path = iPhoneDemoUITests;
 			sourceTree = "<group>";
 		};
-		E041DAA41CFDD799002F387B /* SwiftyiRate */ = {
+		E0642FFF1D2035E500B8CC55 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E041DAA71CFDEE99002F387B /* SwiftyiRate.bundle */,
-				E041DAA21CFDD78A002F387B /* SwiftyiRate.swift */,
+				E06430041D2035E500B8CC55 /* SwiftyiRate.framework */,
+				E06430061D2035E500B8CC55 /* SwiftyiRateTests.xctest */,
 			);
-			name = SwiftyiRate;
+			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -153,6 +174,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				E06430081D2035F800B8CC55 /* PBXTargetDependency */,
 			);
 			name = iPhoneDemo;
 			productName = iPhoneDemo;
@@ -229,6 +251,12 @@
 			mainGroup = E041DA681CFDD741002F387B;
 			productRefGroup = E041DA721CFDD741002F387B /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = E0642FFF1D2035E500B8CC55 /* Products */;
+					ProjectRef = E0642FFE1D2035E500B8CC55 /* SwiftyiRate.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				E041DA701CFDD741002F387B /* iPhoneDemo */,
@@ -238,13 +266,30 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXReferenceProxy section */
+		E06430041D2035E500B8CC55 /* SwiftyiRate.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = SwiftyiRate.framework;
+			remoteRef = E06430031D2035E500B8CC55 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		E06430061D2035E500B8CC55 /* SwiftyiRateTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = SwiftyiRateTests.xctest;
+			remoteRef = E06430051D2035E500B8CC55 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
 /* Begin PBXResourcesBuildPhase section */
 		E041DA6F1CFDD741002F387B /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E064300A1D20360A00B8CC55 /* SwiftyiRate.bundle in Resources */,
 				E041DA7F1CFDD741002F387B /* LaunchScreen.storyboard in Resources */,
-				E041DAA81CFDEE99002F387B /* SwiftyiRate.bundle in Resources */,
 				E041DA7C1CFDD741002F387B /* Assets.xcassets in Resources */,
 				E041DA7A1CFDD741002F387B /* Main.storyboard in Resources */,
 			);
@@ -271,7 +316,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E041DAA31CFDD78A002F387B /* SwiftyiRate.swift in Sources */,
 				E041DA771CFDD741002F387B /* ViewController.swift in Sources */,
 				E041DA751CFDD741002F387B /* AppDelegate.swift in Sources */,
 			);
@@ -305,6 +349,11 @@
 			isa = PBXTargetDependency;
 			target = E041DA701CFDD741002F387B /* iPhoneDemo */;
 			targetProxy = E041DA911CFDD741002F387B /* PBXContainerItemProxy */;
+		};
+		E06430081D2035F800B8CC55 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = SwiftyiRate;
+			targetProxy = E06430071D2035F800B8CC55 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
