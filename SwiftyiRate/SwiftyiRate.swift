@@ -220,7 +220,7 @@ public class SwiftyiRate: NSObject {
         }
         return false
     }
-    weak var delegate: SwiftyiRateDelegate?
+    weak public var delegate: SwiftyiRateDelegate?
     
     private var visibleAlert: UIAlertController?
     private var checkingForPrompt: Bool = false
@@ -405,11 +405,9 @@ public class SwiftyiRate: NSObject {
             self.checkingForPrompt = false
             
             // confirm with delegate
-            if let delegate = self.delegate {
-                if delegate.iRateShouldPromptForRating!() == false {
-                    printLog("iRate did not display the rating prompt because the iRateShouldPromptForRating delegate method returned false")
-                    return
-                }
+            if self.delegate?.iRateShouldPromptForRating?() == false {
+                printLog("iRate did not display the rating prompt because the iRateShouldPromptForRating delegate method returned false")
+                return
             }
             
             // prompt user
@@ -431,7 +429,7 @@ public class SwiftyiRate: NSObject {
             }
             
             // could not connect
-            self.delegate?.iRateCouldNotConnectToAppStore!(error!)
+            self.delegate?.iRateCouldNotConnectToAppStore?(error!)
             
             NSNotificationCenter.defaultCenter().postNotificationName(iRateCouldNotConnectToAppStore, object: error)
         }
@@ -607,7 +605,7 @@ public class SwiftyiRate: NSObject {
             topController!.presentViewController(alert, animated: true, completion: nil)
             
             // inform about prompt
-            self.delegate?.iRateDidPromptForRating!()
+            self.delegate?.iRateDidPromptForRating?()
             NSNotificationCenter.defaultCenter().postNotificationName(iRateDidPromptForRating, object: nil)
         }
     }
@@ -633,7 +631,7 @@ public class SwiftyiRate: NSObject {
             }
             
             // inform about app update
-            self.delegate?.iRateDidDetectAppUpdate!()
+            self.delegate?.iRateDidDetectAppUpdate?()
             NSNotificationCenter.defaultCenter().postNotificationName(iRateDidDetectAppUpdate, object: nil)
         }
         
@@ -678,13 +676,13 @@ public class SwiftyiRate: NSObject {
         if cantOpenMessage != nil {
             printLog(cantOpenMessage)
             let error = NSError(domain: iRateErrorDomain, code: SwiftyiRateErrorCode.iRateErrorCouldNotOpenRatingPageURL.rawValue, userInfo: [NSLocalizedDescriptionKey: cantOpenMessage!])
-            self.delegate?.iRateCouldNotConnectToAppStore!(error)
+            self.delegate?.iRateCouldNotConnectToAppStore?(error)
             NSNotificationCenter.defaultCenter().postNotificationName(iRateCouldNotConnectToAppStore, object: error)
         } else {
             printLog("iRate will open the App Store ratings page using the following URL: \(self.ratingsURL!)")
             
             UIApplication.sharedApplication().openURL(self.ratingsURL!)
-            self.delegate?.iRateDidOpenAppStore!()
+            self.delegate?.iRateDidOpenAppStore?()
             NSNotificationCenter.defaultCenter().postNotificationName(iRateDidOpenAppStore, object: nil)
         }
         
@@ -704,7 +702,7 @@ public class SwiftyiRate: NSObject {
         self.declinedThisVersion = true
         
         // log event
-        self.delegate?.iRateUserDidDeclineToRateApp!()
+        self.delegate?.iRateUserDidDeclineToRateApp?()
         NSNotificationCenter.defaultCenter().postNotificationName(iRateUserDidDeclineToRateApp, object: nil)
     }
     
@@ -713,7 +711,7 @@ public class SwiftyiRate: NSObject {
         self.lastReminded = NSDate()
         
         // log event
-        self.delegate?.iRateUserDidRequestReminderToRateApp!()
+        self.delegate?.iRateUserDidRequestReminderToRateApp?()
         NSNotificationCenter.defaultCenter().postNotificationName(iRateUserDidRequestReminderToRateApp, object: nil)
     }
     
@@ -722,20 +720,18 @@ public class SwiftyiRate: NSObject {
         self.ratedThisVersion = true
         
         // log event
-        self.delegate?.iRateUserDidAttemptToRateApp!()
+        self.delegate?.iRateUserDidAttemptToRateApp?()
         NSNotificationCenter.defaultCenter().postNotificationName(iRateUserDidAttemptToRateApp, object: nil)
         
-        if let delegate = self.delegate {
-            if delegate.iRateShouldOpenAppStore!() {
-                // launch mac app store
-                openRatingsPageInAppStore()
-            }
+        if self.delegate?.iRateShouldOpenAppStore?() == true {
+            // launch mac app store
+            openRatingsPageInAppStore()
         }
     }
 }
 
 // MARK: - Protocol
-@objc protocol SwiftyiRateDelegate{
+@objc public protocol SwiftyiRateDelegate{
     optional func iRateCouldNotConnectToAppStore(error: NSError)
     optional func iRateDidDetectAppUpdate()
     optional func iRateShouldPromptForRating() -> Bool
