@@ -458,17 +458,7 @@ public class SwiftyiRate: NSObject {
             let url = NSURL(string: iTunesServiceURL)!
             let session = NSURLSession.sharedSession()
             let task = session.dataTaskWithURL(url, completionHandler: { (data, response, error) -> Void in
-                
                 var returnError = error
-                
-                // check if the network offline
-                guard let response = response as? NSHTTPURLResponse else {
-                    dispatch_async(dispatch_get_main_queue(), {
-                        self.connectionError(returnError)
-                    })
-                    return
-                }
-                
                 defer {
                     // handle errors (ignoring sandbox issues)
                     if returnError?.code == Int(EPERM) && returnError?.domain == NSPOSIXErrorDomain && self.appStoreID > 0 {
@@ -483,16 +473,26 @@ public class SwiftyiRate: NSObject {
                     }
                     self.inCheckingBackground = false
                 }
+                
+                // check if the network offline
+                guard let response = response as? NSHTTPURLResponse else {
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.connectionError(returnError)
+                    })
+                    return
+                }
+                // check statusCode
                 guard response.statusCode == 200 else {
                     // http error
                     returnError = NSError(domain: "HTTPResponseErrorDomain", code: response.statusCode, userInfo: [NSLocalizedDescriptionKey: "The server returned a \(response.statusCode) error"])
                     return
                 }
+                // check empty response
                 guard let data = data else {
-                    // empty response
                     returnError = NSError(domain: "HTTPResponseErrorDomain", code: response.statusCode, userInfo: [NSLocalizedDescriptionKey: "The server returned an empty response"])
                     return
                 }
+                
                 let json: AnyObject?
                 do {
                     json = try NSJSONSerialization.JSONObjectWithData(data, options: [])
