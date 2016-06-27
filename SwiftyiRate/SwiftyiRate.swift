@@ -60,6 +60,7 @@ private let MAC_APP_STORE_REFRESH_DELAY: Float = 5.0
 private let REQUEST_TIMEOUT: Double = 60.0
 
 private let sharedSwiftyiRate = SwiftyiRate()
+
 public class SwiftyiRate: NSObject {
     
     public class var sharedInstance: SwiftyiRate {
@@ -91,7 +92,7 @@ public class SwiftyiRate: NSObject {
         return self.localizedStringForKey(iRateMessageTitleKey, withDefault: "Rate %@").stringByReplacingOccurrencesOfString("%@", withString: self.applicationName)
     }()
     lazy public var message: String = {
-        var defaultMessage = (self.appStoreGenreID! == 6014) ?
+        var defaultMessage = (self.appStoreGenreID! == iRateAppStoreGameGenreID) ?
             self.localizedStringForKey(iRateGameMessageKey, withDefault: "If you enjoy playing %@, would you mind taking a moment to rate it? It won’t take more than a minute. Thanks for your support!") :
             self.localizedStringForKey(iRateAppMessageKey, withDefault: "If you enjoy using %@, would you mind taking a moment to rate it? It won’t take more than a minute. Thanks for your support!")
         return defaultMessage.stringByReplacingOccurrencesOfString("%@", withString: self.applicationName)
@@ -457,8 +458,17 @@ public class SwiftyiRate: NSObject {
             let url = NSURL(string: iTunesServiceURL)!
             let session = NSURLSession.sharedSession()
             let task = session.dataTaskWithURL(url, completionHandler: { (data, response, error) -> Void in
-                let response = response as! NSHTTPURLResponse
+                
                 var returnError = error
+                
+                // check if the network offline
+                guard let response = response as? NSHTTPURLResponse else {
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.connectionError(returnError)
+                    })
+                    return
+                }
+                
                 defer {
                     // handle errors (ignoring sandbox issues)
                     if returnError?.code == Int(EPERM) && returnError?.domain == NSPOSIXErrorDomain && self.appStoreID > 0 {
